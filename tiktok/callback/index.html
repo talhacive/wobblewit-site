@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>TikTok sign-in · Wobble Wit Studio</title>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<main>
+  <a href="../../" class="logo" aria-label="Wobble Wit home">Ww</a>
+  <h1>TikTok sign-in</h1>
+  <p class="muted">This page only shows the one-time code TikTok sends back, so you can paste it into Wobble Wit Studio on your computer. Nothing is sent anywhere from this page.</p>
+  <div class="card" id="result">
+    <noscript><p>Copy the part after <code>code=</code> from the address bar above (up to the next <code>&amp;</code>).</p></noscript>
+  </div>
+  <nav><a href="../../privacy.html">Privacy policy</a><a href="../../terms.html">Terms of service</a></nav>
+</main>
+<script>
+  (function () {
+    var q = new URLSearchParams(window.location.search);
+    var box = document.getElementById('result');
+    var code = q.get('code'), err = q.get('error'), desc = q.get('error_description');
+    if (code) {
+      box.innerHTML = '<p><strong>Your code</strong> (single use, expires in a few minutes):</p><p class="code" id="code"></p><p><button type="button" id="copy">Copy code</button> <span id="done" class="muted"></span></p><p class="muted">Paste it into Studio → Settings → Accounts → TikTok → "Code from the address bar", then press Test connection.</p>';
+      document.getElementById('code').textContent = code;
+      document.getElementById('copy').addEventListener('click', function () {
+        navigator.clipboard.writeText(code).then(function () { document.getElementById('done').textContent = 'Copied.'; });
+      });
+      history.replaceState(null, '', window.location.pathname);
+    } else if (err) {
+      box.innerHTML = '<p><strong>TikTok said no:</strong> <span id="err"></span></p><p class="muted">Go back to Studio and press "Connect with TikTok" again.</p>';
+      document.getElementById('err').textContent = err + (desc ? ' (' + desc + ')' : '');
+    } else {
+      box.innerHTML = '<p>No code here yet. Start from Studio → Settings → Accounts → TikTok → "Connect with TikTok".</p>';
+    }
+  })();
+</script>
+</body>
+</html>
