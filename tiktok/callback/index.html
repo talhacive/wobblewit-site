@@ -21,12 +21,14 @@
   (function () {
     var q = new URLSearchParams(window.location.search);
     var box = document.getElementById('result');
-    var code = q.get('code'), err = q.get('error'), desc = q.get('error_description');
+    var code = q.get('code'), state = q.get('state'), err = q.get('error'), desc = q.get('error_description');
     if (code) {
+      // With a state, show and copy "code + state" as one address so Studio can check the state. A bare code still works.
+      var paste = state ? window.location.origin + window.location.pathname + '?code=' + encodeURIComponent(code) + '&state=' + encodeURIComponent(state) : code;
       box.innerHTML = '<p><strong>Your code</strong> (single use, expires in a few minutes):</p><p class="code" id="code"></p><p><button type="button" id="copy">Copy code</button> <span id="done" class="muted"></span></p><p class="muted">Paste it into Studio → Settings → Accounts → TikTok → "Code from the address bar", then press Test connection.</p>';
-      document.getElementById('code').textContent = code;
+      document.getElementById('code').textContent = paste;
       document.getElementById('copy').addEventListener('click', function () {
-        navigator.clipboard.writeText(code).then(function () { document.getElementById('done').textContent = 'Copied.'; });
+        navigator.clipboard.writeText(paste).then(function () { document.getElementById('done').textContent = 'Copied.'; });
       });
       history.replaceState(null, '', window.location.pathname);
     } else if (err) {
